@@ -1,4 +1,4 @@
-local author = "lemoncloudberry";
+local author = "lemoncloudtree";
 local addonName = "guildmember";
 
 _G["ADDONS"] = _G["ADDONS"] or {}
