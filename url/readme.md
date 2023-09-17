@@ -1,5 +1,5 @@
 ## TIP
-> [챌린지 멥][url_tip001]
+> [챌린지 멥][url_tip001]{:target="_blank"}
 ---  
 
 
