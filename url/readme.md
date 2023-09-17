@@ -1,3 +1,6 @@
-[챌린지 멥](https://docs.google.com/spreadsheets/d/1BxiYZBzZMv5_aimAwyz7yVTgbbxTEdhAqICKcghv89E/edit#gid=1660213691)
-  
-.
+## TIP
+> [챌린지 멥][url_tip001]
+---  
+
+
+[url_tip001]: https://url.kr/2jsr5q "구글시트"
