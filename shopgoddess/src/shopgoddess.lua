@@ -1,6 +1,6 @@
 local author = 'lemoncloudtree'
 local addonName = 'shopgoddess'
--- version 1.0.4
+-- version 1.0.5
 -- reference: Charbon
 
 _G['ADDONS'] = _G['ADDONS'] or {}
@@ -15,9 +15,8 @@ Shopgoddess.DefaultSettings = {}
 Shopgoddess.DefaultSettings.Fixed = false
 Shopgoddess.DefaultSettings.Position = {X = 300, Y = 300}
 Shopgoddess.cmd_table = {
-  ["가비야"] = 1, ["바카리네"] = 2, ["라다"] = 3,
-  ["바이보라"] = 4, ["용병단"] = 5, ["TOS주화"] = 6,
-  ["고고학"] = 7,
+  ["가비야"] = 1, ["바카리네"] = 2, ["라다"] = 3, ["바이보라"] = 4, ["용병단"] = 5,
+  ["TOS"] = 6, ["tos"] = 6, ["고고학"] = 7,
   ["max"] = 7
 }
 
@@ -68,7 +67,7 @@ function Shopgoddess.GetShopListMenu(self)
   ui.AddContextMenuItem(context, text, callback)
 
   text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 10000627), 30) .. ' TOS주화'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['TOS주화'])
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['TOS'])
   ui.AddContextMenuItem(context, text, callback)
 
   text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200045), 30) .. ' 고고학'
@@ -93,7 +92,7 @@ function SHOPGODDESS_COMMAND(command)
     msg = msg.. '/증표 라다  : 라다 상점{nl}'
     msg = msg.. '/증표 바이보라  : 바이보라의 날개 상점{nl}'
     msg = msg.. '/증표 용병단  : 용병단 상점{nl}'
-    msg = msg.. '/증표 TOS주화  : TOS주화 상점{nl}'
+    msg = msg.. '/증표 TOS or tos  : TOS주화 상점{nl}'
     msg = msg.. '/증표 고고학  : 고고학 상점{nl}'
     return ui.MsgBox(msg,"","Nope")
   end
