@@ -1,6 +1,6 @@
 local author = 'lemoncloudtree'
 local addonName = 'shopgoddess'
--- version 1.0.3
+-- version 1.0.4
 -- reference: Charbon
 
 _G['ADDONS'] = _G['ADDONS'] or {}
@@ -15,8 +15,91 @@ Shopgoddess.DefaultSettings = {}
 Shopgoddess.DefaultSettings.Fixed = false
 Shopgoddess.DefaultSettings.Position = {X = 300, Y = 300}
 Shopgoddess.cmd_table = {
-  ["가비야"] = 1, ["바카리네"] = 2, ["라다"] = 3, ["바이보라"] = 4, ["용병단"] = 5, ["max"] = 5
+  ["가비야"] = 1, ["바카리네"] = 2, ["라다"] = 3,
+  ["바이보라"] = 4, ["용병단"] = 5, ["TOS주화"] = 6,
+  ["고고학"] = 7,
+  ["max"] = 7
 }
+
+function SHOPGODDESS_CLICK_CONTEXT_MENU(shopnum)
+  ui.CloseFrame('earthtowershop')
+
+  if shopnum == 1 then
+    REQ_GabijaCertificate_SHOP_OPEN()
+  elseif shopnum == 2 then
+    REQ_VakarineCertificate_SHOP_OPEN()
+  elseif shopnum == 3 then
+    REQ_RadaCertificate_SHOP_OPEN()
+  elseif shopnum == 4 then
+    REQ_DAILY_REWARD_SHOP_1_OPEN()
+  elseif shopnum == 5 then
+    REQ_PVP_MINE_SHOP_OPEN()
+  elseif shopnum == 6 then
+    local frame = ui.GetFrame("earthtowershop");
+    frame:SetUserValue("SHOP_TYPE", 'EVENT_TOS_WHOLE_SHOP');
+    ui.OpenFrame('earthtowershop');
+  elseif shopnum == 7 then
+    OPEN_ARCHEOLOGY_SHOP()
+  end
+end
+
+function Shopgoddess.GetShopListMenu(self)
+  local context = ui.CreateContextMenu('SHOPGODDESS_SHOP_LIST', '', 0, 0, 170, 100)
+  local text, callback
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11030201), 30) .. ' 가비야'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['가비야'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200161), 30) .. ' 바카리네'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['바카리네'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200303), 30) .. ' 라다'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['라다'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 647016), 30) .. ' 바이보라의 날개'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['바이보라'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 646076), 30) .. ' 용병단'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['용병단'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 10000627), 30) .. ' TOS주화'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['TOS주화'])
+  ui.AddContextMenuItem(context, text, callback)
+
+  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200045), 30) .. ' 고고학'
+  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', Shopgoddess.cmd_table['고고학'])
+  ui.AddContextMenuItem(context, text, callback)
+  return context
+end
+
+function SHOPGODDESS_COMMAND(command)
+  if #command > 0 then
+    local cmd = table.remove(command, 1)
+    local cmdnum = Shopgoddess.cmd_table[cmd]
+
+    if 1 <= cmdnum and cmdnum <= Shopgoddess.cmd_table.max then
+      SHOPGODDESS_CLICK_CONTEXT_MENU(cmdnum)
+    end
+  else
+    local msg = ''
+    msg = msg.. '/증표  : 안내문{nl}'
+    msg = msg.. '/증표 가비야  : 가비야 상점{nl}'
+    msg = msg.. '/증표 바카리네  : 바카리네 상점{nl}'
+    msg = msg.. '/증표 라다  : 라다 상점{nl}'
+    msg = msg.. '/증표 바이보라  : 바이보라의 날개 상점{nl}'
+    msg = msg.. '/증표 용병단  : 용병단 상점{nl}'
+    msg = msg.. '/증표 TOS주화  : TOS주화 상점{nl}'
+    msg = msg.. '/증표 고고학  : 고고학 상점{nl}'
+    return ui.MsgBox(msg,"","Nope")
+  end
+  
+  return
+end
 
 function Shopgoddess.LoadSettings(self)
   local settings, err = acutil.loadJSON(self.SettingsFileLoc, self.DefaultSettings)
@@ -70,48 +153,6 @@ function Shopgoddess.SaveFramePosition(self, X, Y)
   self:SaveSettings()
 end
 
-function Shopgoddess.GetShopListMenu(self)
-  local context = ui.CreateContextMenu('SHOPGODDESS_SHOP_LIST', '', 0, 0, 170, 100)
-  local text, callback
-
-  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11030201), 30) .. ' 가비야'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', 1)
-  ui.AddContextMenuItem(context, text, callback)
-
-  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200161), 30) .. ' 바카리네'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', 2)
-  ui.AddContextMenuItem(context, text, callback)
-
-  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 11200303), 30) .. ' 라다'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', 3)
-  ui.AddContextMenuItem(context, text, callback)
-
-  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 647016), 30) .. ' 바이보라의 날개'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', 4)
-  ui.AddContextMenuItem(context, text, callback)
-
-  text = GET_ITEM_IMG_BY_CLS(GetClassByType("Item", 646076), 30) .. ' 용병단'
-  callback = string.format('SHOPGODDESS_CLICK_CONTEXT_MENU(%d)', 5)
-  ui.AddContextMenuItem(context, text, callback)
-  return context
-end
-
-function SHOPGODDESS_CLICK_CONTEXT_MENU(shopnum)
-  ui.CloseFrame('earthtowershop')
-
-  if shopnum == 1 then
-    REQ_GabijaCertificate_SHOP_OPEN()
-  elseif shopnum == 2 then
-    REQ_VakarineCertificate_SHOP_OPEN()
-  elseif shopnum == 3 then
-    REQ_RadaCertificate_SHOP_OPEN()
-  elseif shopnum == 4 then
-    REQ_DAILY_REWARD_SHOP_1_OPEN()
-  elseif shopnum == 5 then
-    REQ_PVP_MINE_SHOP_OPEN()
-  end
-end
-
 function SHOPGODDESS_CLICK_MARK_BUTTON()
   ui.OpenContextMenu(Shopgoddess:GetShopListMenu())
 end
@@ -139,26 +180,4 @@ function SHOPGODDESS_ON_INIT(addon, frame)
   Shopgoddess:SetFramePositionFixed()
   Shopgoddess:SetFramePosition()
   acutil.slashCommand("/증표", SHOPGODDESS_COMMAND)
-end
-
-function SHOPGODDESS_COMMAND(command)
-  if #command > 0 then
-    local cmd = table.remove(command, 1)
-    local cmdnum = Shopgoddess.cmd_table[cmd]
-
-    if 1 <= cmdnum and cmdnum <= Shopgoddess.cmd_table.max then
-      SHOPGODDESS_CLICK_CONTEXT_MENU(cmdnum)
-    end
-  else
-    local msg = ''
-    msg = msg.. '/증표  : 안내문{nl}'
-    msg = msg.. '/증표 가비야  : 가비야 상점{nl}'
-    msg = msg.. '/증표 바카리네  : 바카리네 상점{nl}'
-    msg = msg.. '/증표 라다  : 라다 상점{nl}'
-    msg = msg.. '/증표 바이보라  : 바이보라의 날개 상점{nl}'
-    msg = msg.. '/증표 용병단  : 용병단 상점{nl}'
-    return ui.MsgBox(msg,"","Nope")
-  end
-  
-  return
 end
